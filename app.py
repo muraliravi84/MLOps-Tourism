@@ -8,6 +8,11 @@ app = Flask(__name__)
 model_path = hf_hub_download(repo_id="Murali0606/tourism-model", filename="tourism_best_model.pkl")
 model = joblib.load(model_path)
 
+# Root route for Hugging Face UI
+@app.route("/")
+def home():
+    return "Tourism model API is running!"
+
 @app.route("/predict", methods=["POST"])
 def predict():
     input_data = request.json
