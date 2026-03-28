@@ -1,0 +1,30 @@
+name: Deploy to Hugging Face Space
+
+on:
+  push:
+    branches: [ main ]
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v3
+
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: "3.10"
+
+      - name: Install dependencies
+        run: pip install -r deployment/requirements.txt
+
+      - name: Configure Git
+        run: |
+          git config --global user.email "muralidhara84@gmail.com"
+          git config --global user.name "muraliravi84"
+
+      - name: Push to Hugging Face Space
+        run: |
+          git remote add space https://Murali0606:${{ secrets.HF_TOKEN }}@huggingface.co/spaces/Murali0606/tourism-deployment
+          git push space main --force
