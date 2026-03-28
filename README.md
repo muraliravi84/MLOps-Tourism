@@ -1,6 +1,6 @@
 ---
 title: Tourism Deployment
-emoji: HappyCoding
+emoji: 🌍
 colorFrom: blue
 colorTo: green
 sdk: streamlit
