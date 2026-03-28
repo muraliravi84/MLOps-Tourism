@@ -1,4 +1,4 @@
 flask
-#joblib
-#pandas
-#huggingface_hub
+joblib
+pandas
+huggingface_hub
