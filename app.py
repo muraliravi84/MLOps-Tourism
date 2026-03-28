@@ -1,6 +1,6 @@
-
 import streamlit as st
 import joblib
+import pandas as pd
 from huggingface_hub import hf_hub_download
 
 # Load model from Hugging Face Hub
@@ -32,7 +32,7 @@ product_pitched = st.selectbox("Product Pitched", ["Basic", "Standard", "Deluxe"
 num_followups = st.number_input("Number of Followups", min_value=0, value=1)
 duration_pitch = st.number_input("Duration of Pitch (minutes)", min_value=1, value=10)
 
-# Manual encoding (must match LabelEncoder mappings used in training)
+# Manual encoding (adjust to match LabelEncoder mappings from training!)
 typeof_contact_map = {"Company Invited": 0, "Self Inquiry": 1}
 occupation_map = {"Salaried": 0, "Freelancer": 1, "Other": 2}
 gender_map = {"Male": 0, "Female": 1}
@@ -47,15 +47,29 @@ marital_status_encoded = marital_status_map[marital_status]
 designation_encoded = designation_map[designation]
 product_encoded = product_map[product_pitched]
 
-# Build input data (same order as training)
-input_data = [[
-    age, typeof_contact_encoded, city_tier, occupation_encoded, gender_encoded,
-    num_person_visiting, preferred_property_star, marital_status_encoded,
-    num_trips, passport, own_car, num_children_visiting,
-    designation_encoded, monthly_income, pitch_score, product_encoded,
-    num_followups, duration_pitch
-]]
+# Build DataFrame with feature names (removes warning)
+input_df = pd.DataFrame([{
+    "Age": age,
+    "TypeofContact": typeof_contact_encoded,
+    "CityTier": city_tier,
+    "Occupation": occupation_encoded,
+    "Gender": gender_encoded,
+    "NumberOfPersonVisiting": num_person_visiting,
+    "PreferredPropertyStar": preferred_property_star,
+    "MaritalStatus": marital_status_encoded,
+    "NumberOfTrips": num_trips,
+    "Passport": passport,
+    "OwnCar": own_car,
+    "NumberOfChildrenVisiting": num_children_visiting,
+    "Designation": designation_encoded,
+    "MonthlyIncome": monthly_income,
+    "PitchSatisfactionScore": pitch_score,
+    "ProductPitched": product_encoded,
+    "NumberOfFollowups": num_followups,
+    "DurationOfPitch": duration_pitch
+}])
 
 if st.button("Predict"):
-    prediction = model.predict(input_data)[0]
+    prediction = model.predict(input_df)[0]
     st.success(f"Predicted tourism category: {prediction}")
+
