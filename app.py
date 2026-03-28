@@ -6,7 +6,7 @@ from huggingface_hub import hf_hub_download
 # Download and load the model from your Hugging Face repo
 model_path = hf_hub_download(
     repo_id="Murali0606/tourism-model",   # your repo name
-    filename="tourism_model.pkl"          # the file you saved in the repo
+    filename="tourism_best_model.pkl"          # the file you saved in the repo
 )
 model = joblib.load(model_path)
 
