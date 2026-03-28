@@ -3,49 +3,59 @@ import streamlit as st
 import joblib
 from huggingface_hub import hf_hub_download
 
-# Download and load the model from Hugging Face Hub
+# Load model from Hugging Face Hub
 model_path = hf_hub_download(
-    repo_id="Murali0606/tourism-model",   # replace with your repo name
-    filename="tourism_best_model.pkl"     # replace with your model filename
+    repo_id="Murali0606/tourism-model",
+    filename="tourism_best_model.pkl"
 )
 model = joblib.load(model_path)
 
 st.title("Tourism Prediction Demo")
 
-# Collect all 18 features
+# Collect inputs
 age = st.number_input("Age", min_value=18, max_value=100, value=30)
-income = st.number_input("Income", min_value=0, value=50000)
-family_members = st.number_input("Family Members", min_value=1, max_value=10, value=4)
-duration = st.number_input("Trip Duration (days)", min_value=1, max_value=30, value=7)
+typeof_contact = st.selectbox("Type of Contact", ["Company Invited", "Self Inquiry"])
+city_tier = st.selectbox("City Tier", [1, 2, 3])
+occupation = st.selectbox("Occupation", ["Salaried", "Freelancer", "Other"])
+gender = st.selectbox("Gender", ["Male", "Female"])
+num_person_visiting = st.number_input("Number of Persons Visiting", min_value=1, max_value=10, value=2)
+preferred_property_star = st.selectbox("Preferred Property Star", [3, 4, 5])
+marital_status = st.selectbox("Marital Status", ["Single", "Married", "Divorced"])
+num_trips = st.number_input("Number of Trips per Year", min_value=0, value=1)
+passport = st.selectbox("Passport", [0, 1])
+own_car = st.selectbox("Own Car", [0, 1])
+num_children_visiting = st.number_input("Number of Children Visiting", min_value=0, value=0)
+designation = st.selectbox("Designation", ["Manager", "Executive", "Other"])
+monthly_income = st.number_input("Monthly Income", min_value=0, value=50000)
+pitch_score = st.slider("Pitch Satisfaction Score", 1, 5, 3)
+product_pitched = st.selectbox("Product Pitched", ["Basic", "Standard", "Deluxe"])
+num_followups = st.number_input("Number of Followups", min_value=0, value=1)
+duration_pitch = st.number_input("Duration of Pitch (minutes)", min_value=1, value=10)
 
-destination = st.selectbox("Destination Type", ["Beach", "Mountain", "City", "Cultural"])
-season = st.selectbox("Season", ["Summer", "Winter", "Spring", "Autumn"])
-transport = st.selectbox("Transport Mode", ["Car", "Train", "Flight", "Bus"])
-accommodation = st.selectbox("Accommodation Type", ["Hotel", "Resort", "Homestay", "Hostel"])
-purpose = st.selectbox("Purpose of Travel", ["Leisure", "Business", "Pilgrimage", "Education"])
-food_pref = st.selectbox("Food Preference", ["Vegetarian", "Non-Vegetarian", "Mixed"])
-shopping = st.selectbox("Shopping Interest", ["High", "Medium", "Low"])
-adventure = st.selectbox("Adventure Interest", ["Yes", "No"])
-cultural_interest = st.selectbox("Cultural Interest", ["Yes", "No"])
-kids = st.selectbox("Travelling with Kids", ["Yes", "No"])
-elderly = st.selectbox("Travelling with Elderly", ["Yes", "No"])
-budget = st.number_input("Budget (INR)", min_value=1000, value=20000)
-rating = st.slider("Past Trip Satisfaction (1-5)", 1, 5, 3)
-repeat_travel = st.selectbox("Repeat Traveller", ["Yes", "No"])
+# Manual encoding (must match LabelEncoder mappings used in training)
+typeof_contact_map = {"Company Invited": 0, "Self Inquiry": 1}
+occupation_map = {"Salaried": 0, "Freelancer": 1, "Other": 2}
+gender_map = {"Male": 0, "Female": 1}
+marital_status_map = {"Single": 0, "Married": 1, "Divorced": 2}
+designation_map = {"Manager": 0, "Executive": 1, "Other": 2}
+product_map = {"Basic": 0, "Standard": 1, "Deluxe": 2}
 
-# Build input data in the same order as training
+typeof_contact_encoded = typeof_contact_map[typeof_contact]
+occupation_encoded = occupation_map[occupation]
+gender_encoded = gender_map[gender]
+marital_status_encoded = marital_status_map[marital_status]
+designation_encoded = designation_map[designation]
+product_encoded = product_map[product_pitched]
+
+# Build input data (same order as training)
 input_data = [[
-    age, income, family_members, duration,
-    destination, season, transport, accommodation,
-    purpose, food_pref, shopping, adventure,
-    cultural_interest, kids, elderly, budget,
-    rating, repeat_travel
+    age, typeof_contact_encoded, city_tier, occupation_encoded, gender_encoded,
+    num_person_visiting, preferred_property_star, marital_status_encoded,
+    num_trips, passport, own_car, num_children_visiting,
+    designation_encoded, monthly_income, pitch_score, product_encoded,
+    num_followups, duration_pitch
 ]]
 
 if st.button("Predict"):
     prediction = model.predict(input_data)[0]
     st.success(f"Predicted tourism category: {prediction}")
-
-
-
-
