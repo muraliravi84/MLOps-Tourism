@@ -1,4 +1,4 @@
-name: Deploy to Hugging Face Space
+name: CI/CD Deploy to Hugging Face Space
 
 on:
   push:
