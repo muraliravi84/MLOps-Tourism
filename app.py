@@ -15,6 +15,7 @@ def predict():
     df = pd.DataFrame([input_data])
     prediction = model.predict(df)[0]
     return jsonify({"ProdTaken": int(prediction)})
+    
 
 if __name__ == "__main__":
-    app.run(host="0.0.0.0", port=8080)
+    app.run(host="0.0.0.0", port=7860)

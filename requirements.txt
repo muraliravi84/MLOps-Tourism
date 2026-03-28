@@ -1,5 +1,4 @@
-pandas
-scikit-learn
-joblib
-huggingface_hub
 flask
+joblib
+pandas
+huggingface_hub
